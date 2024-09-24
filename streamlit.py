@@ -20,13 +20,11 @@ st.set_page_config(
 st.markdown("""
 <style>
     .reportview-container {
-        background: #f0f2f6;
+        background: #0e1117;
     }
     .main {
-        background: #ffffff;
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        background: #0e1117;
+        color: #ffffff;
     }
     .stButton>button {
         background-color: #4CAF50;
@@ -34,26 +32,24 @@ st.markdown("""
         font-weight: bold;
     }
     .stTextInput>div>div>input {
-        background-color: #f0f2f6;
+        background-color: #262730;
+        color: #ffffff;
     }
-    h1, h2, h3 {
-        color: #2c3e50;
-    }
-    .metric-container {
-        background-color: #f8f9fa;
-        border: 1px solid #dee2e6;
-        border-radius: 5px;
-        padding: 1rem;
-        margin-bottom: 1rem;
-    }
-    .metric-value {
-        font-size: 2rem;
+    h1 {
+        color: #ffffff;
         font-weight: bold;
-        color: #2c3e50;
     }
-    .metric-label {
-        font-size: 1rem;
-        color: #6c757d;
+    h2, h3 {
+        color: #ffffff;
+    }
+    .sidebar .sidebar-content {
+        background-color: #262730;
+    }
+    .Widget>label {
+        color: #ffffff;
+    }
+    .stSlider>div>div>div>div {
+        background-color: #4CAF50;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -61,7 +57,7 @@ st.markdown("""
 # Sidebar
 with st.sidebar:
     st.title("📈 Advanced Option Analytics")
-    st.write("Developed by Arav Behl")
+    st.write("Developed by [Arav Behl](https://www.linkedin.com/in/arav-behl-0524a6230/)")
     
     # Input parameters
     current_price = st.number_input("Current Asset Price", value=100.0, step=0.01)
@@ -117,7 +113,12 @@ put_payoffs = np.maximum(strike - spot_prices, 0) - bs_model.put_price
 fig = go.Figure()
 fig.add_trace(go.Scatter(x=spot_prices, y=call_payoffs, mode='lines', name='Call Payoff'))
 fig.add_trace(go.Scatter(x=spot_prices, y=put_payoffs, mode='lines', name='Put Payoff'))
-fig.update_layout(title='Option Payoff Diagram', xaxis_title='Spot Price', yaxis_title='Profit/Loss')
+fig.update_layout(
+    title='Option Payoff Diagram',
+    xaxis_title='Spot Price',
+    yaxis_title='Profit/Loss',
+    template="plotly_dark"
+)
 st.plotly_chart(fig, use_container_width=True)
 
 # Sensitivity Analysis
@@ -146,7 +147,12 @@ for param in param_range:
 fig = go.Figure()
 fig.add_trace(go.Scatter(x=param_range, y=call_prices, mode='lines', name='Call Price'))
 fig.add_trace(go.Scatter(x=param_range, y=put_prices, mode='lines', name='Put Price'))
-fig.update_layout(title=f'Option Price Sensitivity to {selected_param}', xaxis_title=f'{selected_param} (relative to current)', yaxis_title='Option Price')
+fig.update_layout(
+    title=f'Option Price Sensitivity to {selected_param}',
+    xaxis_title=f'{selected_param} (relative to current)',
+    yaxis_title='Option Price',
+    template="plotly_dark"
+)
 st.plotly_chart(fig, use_container_width=True)
 
 # Heatmaps for Call and Put P&L
@@ -167,7 +173,7 @@ def plot_heatmap(option_type):
     fig = px.imshow(pnl, x=spot_range, y=vol_range, color_continuous_scale="RdYlGn",
                     labels=dict(x="Spot Price", y="Volatility", color="P&L"),
                     title=f"{option_type.capitalize()} Option P&L")
-    fig.update_layout(coloraxis_colorbar=dict(title="P&L"))
+    fig.update_layout(coloraxis_colorbar=dict(title="P&L"), template="plotly_dark")
     return fig
 
 with col1:
@@ -195,8 +201,12 @@ simulated_paths = [simulate_price_path(current_price, time_to_maturity, interest
 fig = go.Figure()
 for path in simulated_paths[:100]:  # Plot first 100 paths
     fig.add_trace(go.Scatter(y=path, mode='lines', line=dict(width=1), opacity=0.3))
-fig.update_layout(title='Monte Carlo Simulation of Asset Price Paths',
-                  xaxis_title='Time Steps', yaxis_title='Asset Price')
+fig.update_layout(
+    title='Monte Carlo Simulation of Asset Price Paths',
+    xaxis_title='Time Steps',
+    yaxis_title='Asset Price',
+    template="plotly_dark"
+)
 st.plotly_chart(fig, use_container_width=True)
 
 # Calculate option prices based on simulated paths
@@ -212,4 +222,4 @@ st.write(f"Monte Carlo Put Price: ${mc_put_price:.2f}")
 
 # Add a footer
 st.markdown("---")
-st.markdown("Developed by Arav Behl | [LinkedIn](https://www.linkedin.com/in/arav-behl-0524a6230/) | [GitHub](https://github.com/yourusername)")
+st.markdown("Developed by [Arav Behl](https://www.linkedin.com/in/arav-behl-0524a6230/) | [GitHub](https://github.com/yourusername)")
